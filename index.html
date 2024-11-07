@@ -1,72 +1,24 @@
-<DOCTYPE HTML>
-    <html>
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <meta charset="utf-8" />
-        <title>Client Side Analytics</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Side Analytics</title>
+    <script src="index.js" type="module"></script>
+</head>
 
-    <body>
-        <input type="button" value="Test Fibonacci Function" onclick="testFibonacci();" />
-        <p id="fibres"></p>
-        <input type="button" value="Test loop 1.000.000.000 times" onclick="testLoop()" />
-        <p id="loopres"></p>
-        <script type="module">
+<body>
+    <h1>Client Side Analytics</h1>
+    <input type="file" name="file" id="file" accept=".json, .csv, .parquet">
+    <input type="text" name="table" id="table">
+    <button type="button" onclick="loadData()">Create Table</button>
 
-            import init, { fibonacci_wasm, add1000000000_wasm } from "./webasm_module/pkg/webasm_module.js"
+    <div id="tables"></div>
+    <h2>SQL Query</h2>
+    <textarea name="query" id="query" rows="10"></textarea>
+    <h2>Results:</h2>
+    <div id="reuslt"></div>
+</body>
 
-            function fibonacciJS(n) {
-                if (n <= 0) {
-                    return 0
-                } else if (n == 1) {
-                    return 1
-                } else {
-                    return fibonacciJS(n - 1) + fibonacciJS(n - 2)
-                }
-            }
-
-            function add1000000000JS() {
-                var i = 0
-                while (i < 1000000000) {
-                    i++
-                }
-                return i
-            }
-
-            window.testFibonacci = function () {
-                document.getElementById("fibres").innerHTML = "Running Test"
-                init().then(() => {
-                    var startJS = Date.now()
-                    fibonacciJS(40)
-                    var endJS = Date.now()
-                    var jsTime = endJS - startJS
-                    var startWASM = Date.now()
-                    fibonacci_wasm(40)
-                    var endWASM = Date.now()
-                    var wasmTime = endWASM - startWASM
-
-                    document.getElementById("fibres").innerHTML = `Javascript function found 40th Fibonacci number in ${jsTime} milliseconds while the WebAssembly function did in ${wasmTime} miliseconds`
-                });
-            };
-
-            window.testLoop = function () {
-                document.getElementById("loopres").innerHTML = "Running Test"
-
-                init().then(() => {
-                    var startJS = Date.now()
-                    add1000000000JS()
-                    var endJS = Date.now()
-                    var jsTime = endJS - startJS
-                    var startWASM = Date.now()
-                    let i = add1000000000_wasm()
-                    console.log(i)
-                    var endWASM = Date.now()
-                    var wasmTime = endWASM - startWASM
-
-                    document.getElementById("loopres").innerHTML = `Javascript function ran loop in ${jsTime} milliseconds while the WebAssembly function did in ${wasmTime} miliseconds`
-                });
-            }
-        </script>
-    </body>
-
-    </html>
+</html>
