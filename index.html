@@ -1,0 +1,72 @@
+<DOCTYPE HTML>
+    <html>
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Client Side Analytics</title>
+    </head>
+
+    <body>
+        <input type="button" value="Test Fibonacci Function" onclick="testFibonacci();" />
+        <p id="fibres"></p>
+        <input type="button" value="Test loop 1.000.000.000 times" onclick="testLoop()" />
+        <p id="loopres"></p>
+        <script type="module">
+
+            import init, { fibonacci_wasm, add1000000000_wasm } from "./webasm_module/pkg/webasm_module.js"
+
+            function fibonacciJS(n) {
+                if (n <= 0) {
+                    return 0
+                } else if (n == 1) {
+                    return 1
+                } else {
+                    return fibonacciJS(n - 1) + fibonacciJS(n - 2)
+                }
+            }
+
+            function add1000000000JS() {
+                var i = 0
+                while (i < 1000000000) {
+                    i++
+                }
+                return i
+            }
+
+            window.testFibonacci = function () {
+                document.getElementById("fibres").innerHTML = "Running Test"
+                init().then(() => {
+                    var startJS = Date.now()
+                    fibonacciJS(40)
+                    var endJS = Date.now()
+                    var jsTime = endJS - startJS
+                    var startWASM = Date.now()
+                    fibonacci_wasm(40)
+                    var endWASM = Date.now()
+                    var wasmTime = endWASM - startWASM
+
+                    document.getElementById("fibres").innerHTML = `Javascript function found 40th Fibonacci number in ${jsTime} milliseconds while the WebAssembly function did in ${wasmTime} miliseconds`
+                });
+            };
+
+            window.testLoop = function () {
+                document.getElementById("loopres").innerHTML = "Running Test"
+
+                init().then(() => {
+                    var startJS = Date.now()
+                    add1000000000JS()
+                    var endJS = Date.now()
+                    var jsTime = endJS - startJS
+                    var startWASM = Date.now()
+                    let i = add1000000000_wasm()
+                    console.log(i)
+                    var endWASM = Date.now()
+                    var wasmTime = endWASM - startWASM
+
+                    document.getElementById("loopres").innerHTML = `Javascript function ran loop in ${jsTime} milliseconds while the WebAssembly function did in ${wasmTime} miliseconds`
+                });
+            }
+        </script>
+    </body>
+
+    </html>

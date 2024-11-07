@@ -1,0 +1,19 @@
+{
+  "name": "webasm_module",
+  "type": "module",
+  "collaborators": [
+    "Dilovan Celik <dilovan.celik@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "license": "MIT/Apache-2.0",
+  "files": [
+    "webasm_module_bg.wasm",
+    "webasm_module.js",
+    "webasm_module.d.ts"
+  ],
+  "main": "webasm_module.js",
+  "types": "webasm_module.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
