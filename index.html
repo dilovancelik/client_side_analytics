@@ -6,19 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Side Analytics</title>
     <script src="index.js" type="module"></script>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
 </head>
 
 <body>
-    <h1>Client Side Analytics</h1>
-    <input type="file" name="file" id="file" accept=".json, .csv, .parquet">
-    <input type="text" name="table" id="table">
-    <button type="button" onclick="loadData()">Create Table</button>
+    <h1 style="text-align: center;">Client Side Analytics</h1>
+    <div>
+        <input type="file" name="file" id="file" accept=".json, .csv, .parquet">
+        <button type="button" onclick="loadData()">Create Table</button>
+    </div>
 
-    <div id="tables"></div>
+    <div>
+        <ul id="tables">
+
+        </ul>
+    </div>
     <h2>SQL Query</h2>
-    <textarea name="query" id="query" rows="10"></textarea>
+    <div>
+
+        <textarea name="query" id="query" rows=20 style="width:100%"></textarea>
+        <button type="button" onclick="executeQuery()">Execute</button>
+    </div>
     <h2>Results:</h2>
-    <div id="reuslt"></div>
+    <div>
+        <table id="result">
+        </table>
+    </div>
 </body>
 
 </html>
