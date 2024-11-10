@@ -17,7 +17,10 @@ const db = new duckdb.AsyncDuckDB(logger, worker);
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 URL.revokeObjectURL(worker_url);
 
+
 window.loadData = async function () {
+    var fileText = document.getElementById("filetext")
+    fileText.textContent = "Creating table..."
     const c = await db.connect();
 
     const file = document.getElementById("file").files[0];
@@ -42,6 +45,7 @@ window.loadData = async function () {
     result.toArray().map((row) => console.log(row.toJSON()));
     addTableToList(tableName)
     await c.close()
+    fileText.textContent = "Table created, choose CSV, JSON or Parquet to create a new table"
 
 }
 

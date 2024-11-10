@@ -7,13 +7,14 @@
     <title>Client Side Analytics</title>
     <script src="index.js" type="module"></script>
     <link rel="stylesheet" href="https://unpkg.com/mvp.css">
-</head>
+    <link rel="stylesheet" href="index.css">
 
 <body>
     <h1 style="text-align: center;">Client Side Analytics</h1>
     <div>
-        <input type="file" name="file" id="file" accept=".json, .csv, .parquet">
-        <button type="button" onclick="loadData()">Create Table</button>
+        <input type="file" name="file" id="file" accept=".json, .csv, .parquet" hidden onchange="loadData()" />
+        <label for="file">Upload</label>
+        <span id="filetext">Choose CSV, JSON or Parquet to create table</span>
     </div>
 
     <div>
