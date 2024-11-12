@@ -50,34 +50,41 @@ window.loadData = async function () {
 }
 
 window.executeQuery = async function () {
-    var query = document.getElementById("query").value
-    const c = await db.connect()
-
-    const result = await c.query(query)
-    console.log(result)
+    var errorMessage = document.getElementById("error");
+    errorMessage.innerHTML = "";
     var table = document.getElementById("result");
-    table.innerHTML = ""
-    var headerRow = document.createElement("tr");
-    var headers = []
-    result.schema.fields.map((field) => {
-        var header = document.createElement("th")
-        header.innerHTML = field.name
-        headerRow.appendChild(header)
-        headers.push(field.name)
-    })
-    console.log(headers)
-    table.appendChild(headerRow)
-    result.toArray().map((row) => {
-        var tableRow = document.createElement("tr")
-        headers.forEach((field) => {
-            var cell = document.createElement("td")
-            cell.innerHTML = row[field]
-            tableRow.appendChild(cell)
+    table.innerHTML = "";
+    var query = document.getElementById("query").value;
+    const c = await db.connect();
+    c.query(query)
+        .then((result) => {
+            var headers = [];
+            console.log(result)
+            result.schema.fields.map((field) => {
+                var header = document.createElement("th")
+                header.innerHTML = field.name
+                headerRow.appendChild(header)
+                headers.push(field.name)
+            })
+            console.log(headers)
+            table.appendChild(headerRow)
+            result.toArray().map((row) => {
+                var tableRow = document.createElement("tr")
+                headers.forEach((field) => {
+                    var cell = document.createElement("td")
+                    cell.innerHTML = row[field]
+                    tableRow.appendChild(cell)
+                })
+                table.appendChild(tableRow)
+            })
         })
-        table.appendChild(tableRow)
-    })
-
-    await c.close()
+        .catch((error) => {
+            var htmlError = error.message.split("\n").map((line) => "> " + line).slice(0, -1).join("<br/>")
+            errorMessage.innerHTML = htmlError
+        })
+        .finally(async () => {
+            await c.close()
+        })
 }
 
 window.addTableToList = function (tableName) {

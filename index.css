@@ -19,3 +19,8 @@ body {
     margin-left: 20%;
     margin-right: 20%;
 }
+
+p {
+    background-color: pink;
+    border-radius: 5px;
+}
