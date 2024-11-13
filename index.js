@@ -58,27 +58,12 @@ window.executeQuery = async function () {
     const c = await db.connect();
     c.query(query)
         .then((result) => {
-            var headers = [];
-            console.log(result)
-            result.schema.fields.map((field) => {
-                var header = document.createElement("th")
-                header.innerHTML = field.name
-                headerRow.appendChild(header)
-                headers.push(field.name)
-            })
-            console.log(headers)
-            table.appendChild(headerRow)
-            result.toArray().map((row) => {
-                var tableRow = document.createElement("tr")
-                headers.forEach((field) => {
-                    var cell = document.createElement("td")
-                    cell.innerHTML = row[field]
-                    tableRow.appendChild(cell)
-                })
-                table.appendChild(tableRow)
-            })
+            console.log("Hello")
+            showResult(result)
+            console.log("World")
         })
         .catch((error) => {
+            var errorMessage = document.getElementById("error")
             var htmlError = error.message.split("\n").map((line) => "> " + line).slice(0, -1).join("<br/>")
             errorMessage.innerHTML = htmlError
         })
@@ -87,6 +72,27 @@ window.executeQuery = async function () {
         })
 }
 
+function showResult(result) {
+    var headers = [];
+    var headerRow = document.createElement("tr");
+    var table = document.getElementById("result")
+    result.schema.fields.map((field) => {
+        var header = document.createElement("th")
+        header.innerHTML = field.name
+        headerRow.appendChild(header)
+        headers.push(field.name)
+    })
+    table.appendChild(headerRow)
+    result.toArray().map((row) => {
+        var tableRow = document.createElement("tr")
+        headers.forEach((field) => {
+            var cell = document.createElement("td")
+            cell.innerHTML = row[field]
+            tableRow.appendChild(cell)
+        })
+        table.appendChild(tableRow)
+    })
+}
 window.addTableToList = function (tableName) {
     var tableList = document.getElementById("tables")
     var tableItem = document.createElement("li")
