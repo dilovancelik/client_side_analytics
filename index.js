@@ -23,7 +23,11 @@ var loadedTables = [];
 window.suggestionButtonCounter = -1;
 
 window.loadData = async function () {
+    const start = Date.now();
+    var table_result = document.getElementById("table_result_text");
+    table_result.innerHTML = ""
     var fileText = document.getElementById("filetext")
+
     fileText.textContent = "Creating table..."
     const c = await db.connect();
 
@@ -37,11 +41,11 @@ window.loadData = async function () {
 
     var query = ""
     if (extension === "csv") {
-        query = `CREATE TABLE ${tableName} AS FROM read_csv_auto('/${file.name}', header = true, sample_size=-1)`;
+        query = `CREATE TABLE ${tableName} AS FROM read_csv_auto('/${file.name}', header = true)`;
     } else if (extension === "json") {
         query = `CREATE TABLE ${tableName} AS FROM read_json_auto('/${file.name}')`;
     } else if (extension === "parquet") {
-        query = `CREATE TABLE ${tableName} AS FROM read_parquet('/${file.name}')`;
+        query = `CREATE TABLE ${tableName} AS FROM read_parquet('/${file.name}', header = true, sample_size=-1)`;
     }
     await c.query(query);
     const result = await c.query(`DESCRIBE ${tableName}`);
@@ -51,12 +55,17 @@ window.loadData = async function () {
     await c.close()
     loadedTables.push(tableName)
     fileText.textContent = "Table created, choose CSV, JSON or Parquet to create a new table"
-
-
+    const end = Date.now();
+    table_result.innerHTML = `Table created in ${Math.floor((end - start) / 1000)} seconds.`;
 }
 
 const executeQuery = async () => {
+    const start = Date.now();
+    var result_text = document.getElementById("query_result_text");
+    result_text.innerHTML = ""
     suggestionElement.innerHTML = "";
+    var button = document.getElementById("execute_button");
+    button.textContent = "Executing..."
     var errorMessage = document.getElementById("error");
     errorMessage.innerHTML = "";
     var table = document.getElementById("result");
@@ -65,6 +74,8 @@ const executeQuery = async () => {
     const c = await db.connect();
     c.query(query)
         .then((result) => {
+            const end = Date.now();
+            result_text.innerHTML = `Query finished in ${Math.floor((end - start) / 1000)} seconds`
             showResult(result)
         })
         .catch((error) => {
@@ -74,6 +85,7 @@ const executeQuery = async () => {
         })
         .finally(async () => {
             await c.close()
+            button.textContent = "Execute"
         })
 }
 
