@@ -41,7 +41,7 @@ window.loadData = async function () {
     } else if (extension === "json") {
         query = `CREATE TABLE ${tableName} AS FROM read_json_auto('/${file.name}')`;
     } else if (extension === "parquet") {
-        query = `CREATE TABLE ${tableName}]AS FROM read_parquet('/${file.name}')`;
+        query = `CREATE TABLE ${tableName} AS FROM read_parquet('/${file.name}')`;
     }
     await c.query(query);
     const result = await c.query(`DESCRIBE ${tableName}`);
