@@ -9,6 +9,13 @@ export function add1000000000_wasm(): number;
  * @returns {number}
  */
 export function fibonacci_wasm(n: number): number;
+/**
+ * @param {string} query
+ * @param {(string)[]} tables
+ * @param {number} cursor_loc
+ * @returns {string}
+ */
+export function sql_parser_autocomplete(query: string, tables: (string)[], cursor_loc: number): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -16,7 +23,12 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly add1000000000_wasm: () => number;
   readonly fibonacci_wasm: (a: number) => number;
-  readonly __wbindgen_export_0: WebAssembly.Table;
+  readonly sql_parser_autocomplete: (a: number, b: number, c: number, d: number, e: number) => Array;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+  readonly __wbindgen_export_2: WebAssembly.Table;
+  readonly __externref_table_alloc: () => number;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

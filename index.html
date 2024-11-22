@@ -5,34 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Side Analytics</title>
-    <script src="index.js" type="module"></script>
     <link rel="stylesheet" href="https://unpkg.com/mvp.css">
     <link rel="stylesheet" href="index.css">
-
+    <script src="index.js" type="module"></script>
 <body>
-    <h1 style="text-align: center;">Client Side Analytics</h1>
-    <div>
-        <input type="file" name="file" id="file" accept=".json, .csv, .parquet" hidden onchange="loadData()" />
-        <label for="file">Upload</label>
-        <span id="filetext">Choose CSV, JSON or Parquet to create table</span>
-    </div>
-
-    <div>
-        <ul id="tables">
-
-        </ul>
-    </div>
-    <h2>SQL Query</h2>
-    <div>
-
-        <textarea name="query" id="query" rows=20 style="width:100%"></textarea>
-        <button type="button" onclick="executeQuery()">Execute</button>
-    </div>
-    <h2>Results:</h2>
-    <div>
-        <table id="result">
-        </table>
-        <p id="error"></p>
+    <h1 style="text-align: center;">Quack House</h1>
+    <div class="container">
+        <div class="upladButton">
+            <input type="file" name="file" id="file" accept=".json, .csv, .parquet" hidden onchange="loadData()" />
+            <label for="file">Upload</label>
+            <span id="filetext">Choose CSV, JSON or Parquet to create table</span>
+        </div>
+        <div class="tables">
+            <h3>Database Explorer</h3>
+            <ul id="tables">
+            </ul>
+        </div>
+        <div class="query">
+            <h2>SQL Query</h2>
+            <div id="query_container" class="query_container">
+                <p class="query_help">Use SHIFT+TAB to toggle through autocomplete suggestions. To execute the query press F5 og click the execute button</p>
+                <textarea id="query_textarea" class="query_textarea" rows="20"></textarea> 
+                <div id="auto_suggestions" class="suggestions"></div>
+            </div> 
+            <button type="button" id="execute_button">Execute</button>
+        </div>
+        <div class="result">
+            <h2>Results:</h2>
+            <table id="result">
+            </table>
+            <p id="error"></p>
+        </div>
     </div>
 </body>
 
