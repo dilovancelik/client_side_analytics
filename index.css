@@ -30,7 +30,7 @@ label {
     grid-row: 1 / 3;
 }
 .result {
-    grid-column: 1 / 3;
+    grid-column: 1 / 2;
     grid-row: 3;
 }
 
@@ -113,4 +113,11 @@ details ul li:last-child {
 .query_help {
     font-size: smaller;
     font-weight: lighter;
+}
+
+.query_error {
+    background: pink;
+    border-radius: 10px;
+    padding: 10px;
+    display: inline-block;
 }
