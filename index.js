@@ -25,8 +25,9 @@ window.suggestionButtonCounter = -1;
 window.loadData = async function () {
     const start = Date.now();
     var table_result = document.getElementById("table_result_text");
-    table_result.innerHTML = ""
-    var fileText = document.getElementById("filetext")
+    table_result.innerHTML = "";
+    table_result.classList.remove("query_error");
+    var fileText = document.getElementById("filetext");
 
     fileText.textContent = "Creating table..."
     const c = await db.connect();
@@ -45,29 +46,45 @@ window.loadData = async function () {
     } else if (extension === "json") {
         query = `CREATE TABLE ${tableName} AS FROM read_json_auto('/${file.name}')`;
     } else if (extension === "parquet") {
-        query = `CREATE TABLE ${tableName} AS FROM read_parquet('/${file.name}', header = true, sample_size=-1)`;
+        query = `CREATE TABLE ${tableName} AS FROM read_parquet('/${file.name}')`;
     }
-    await c.query(query);
-    const result = await c.query(`DESCRIBE ${tableName}`);
-
-    addTableToList(tableName, result)
-    saveTableMetadata(tableName, result)
-    await c.close()
-    loadedTables.push(tableName)
-    fileText.textContent = "Table created, choose CSV, JSON or Parquet to create a new table"
-    const end = Date.now();
-    table_result.innerHTML = `Table created in ${Math.floor((end - start) / 1000)} seconds.`;
+    c.query(query)
+        .then(async () => {
+            c.query(`DESCRIBE ${tableName}`)
+                .then((result) => {
+                    addTableToList(tableName, result)
+                    saveTableMetadata(tableName, result)
+                    loadedTables.push(tableName)
+                    fileText.textContent = "Table created, choose CSV, JSON or Parquet to create a new table"
+                    const end = Date.now();
+                    table_result.innerHTML = `Table created in ${Math.floor((end - start) / 1000)} seconds.`;
+                })
+                .catch((error) => {
+                    var htmlError = error.message.split("\n").slice(0, -1).join("<br/>"); 
+                    table_result.classList.add("query_error");
+                    table_result.innerHTML = htmlError;
+                    fileText.textContent = "Table error creation, try again.";
+                });
+        })
+        .catch((error) => {
+            var htmlError = error.message.split("\n").slice(0, -1).join("<br/>"); 
+            table_result.classList.add("query_error");
+            table_result.innerHTML = htmlError;
+            fileText.textContent = "Table error creation, try again.";
+        })
+       .finally(async () => {
+            await c.close();
+        });
 }
 
 const executeQuery = async () => {
     const start = Date.now();
     var result_text = document.getElementById("query_result_text");
-    result_text.innerHTML = ""
+    result_text.innerHTML = "";
+    result_text.classList.remove("query_error");
     suggestionElement.innerHTML = "";
     var button = document.getElementById("execute_button");
     button.textContent = "Executing..."
-    var errorMessage = document.getElementById("error");
-    errorMessage.innerHTML = "";
     var table = document.getElementById("result");
     table.innerHTML = "";
     var query = document.getElementById("query_textarea").value;
@@ -79,9 +96,9 @@ const executeQuery = async () => {
             showResult(result)
         })
         .catch((error) => {
-            var errorMessage = document.getElementById("error")
-            var htmlError = error.message.split("\n").map((line) => "> " + line).slice(0, -1).join("<br/>")
-            errorMessage.innerHTML = htmlError
+            var htmlError = error.message.split("\n").map((line) => "> " + line).slice(0, -1).join("<br/>");
+            result_text.classList.add("query_error");
+            result_text.innerHTML = `${htmlError}`;
         })
         .finally(async () => {
             await c.close()
