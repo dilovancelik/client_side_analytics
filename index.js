@@ -20,9 +20,9 @@ await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 URL.revokeObjectURL(worker_url);
 
 var loadedTables = [];
-window.suggestionButtonCounter = -1;
+var suggestionButtonCounter = -1;
 
-window.loadData = async function () {
+const loadData = async () => {
     const start = Date.now();
     var table_result = document.getElementById("table_result_text");
     table_result.innerHTML = "";
@@ -53,13 +53,14 @@ window.loadData = async function () {
             c.query(`DESCRIBE ${tableName}`)
                 .then((result) => {
                     addTableToList(tableName, result)
-                    saveTableMetadata(tableName, result)
+                    saveTableMetadata(result)
                     loadedTables.push(tableName)
                     fileText.textContent = "Table created, choose CSV, JSON or Parquet to create a new table"
                     const end = Date.now();
                     table_result.innerHTML = `Table created in ${Math.floor((end - start) / 1000)} seconds.`;
                 })
                 .catch((error) => {
+                    console.log(error);
                     var htmlError = error.message.split("\n").slice(0, -1).join("<br/>"); 
                     table_result.classList.add("query_error");
                     table_result.innerHTML = htmlError;
@@ -67,6 +68,7 @@ window.loadData = async function () {
                 });
         })
         .catch((error) => {
+            console.log("hello")
             var htmlError = error.message.split("\n").slice(0, -1).join("<br/>"); 
             table_result.classList.add("query_error");
             table_result.innerHTML = htmlError;
@@ -98,7 +100,7 @@ const executeQuery = async () => {
         .catch((error) => {
             var htmlError = error.message.split("\n").map((line) => "> " + line).slice(0, -1).join("<br/>");
             result_text.classList.add("query_error");
-            result_text.innerHTML = `${htmlError}`;
+            result_text.innerHTML = htmlError;
         })
         .finally(async () => {
             await c.close()
@@ -106,7 +108,7 @@ const executeQuery = async () => {
         })
 }
 
-function showResult(result) {
+const showResult = (result) => {
     var headers = [];
     var headerRow = document.createElement("tr");
     var table = document.getElementById("result")
@@ -127,20 +129,20 @@ function showResult(result) {
         table.appendChild(tableRow)
     })
 }
-window.addTableToList = function (tableName, description) {
+const addTableToList = (tableName, description) => {
     var tableList = document.getElementById("tables");
     var tableItem = createTableSchema(tableName, description)
     tableList.appendChild(tableItem)
 }
 
-const saveTableMetadata = (tableName, description) => {
+const saveTableMetadata = (description) => {
     var metaData = {}
     description.toArray().map((row) => {
         var name = row["column_name"]
         metaData[name] = row.toJSON();
     })
-    window.sessionStorage.setItem(tableName, JSON.stringify(metaData))
 }
+
 const createTableSchema = (tableName, description) => {
     var metadata = document.createElement("details");
     var title = document.createElement("summary");
@@ -274,3 +276,7 @@ const findIndexOfCurrentWord = () => {
 document.getElementById("execute_button").addEventListener("click", () => {
     executeQuery();
 });
+
+document.getElementById("file").addEventListener("change", () => {
+    loadData();
+})
