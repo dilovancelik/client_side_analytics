@@ -94,7 +94,13 @@ const executeQuery = async () => {
     c.query(query)
         .then((result) => {
             const end = Date.now();
-            result_text.innerHTML = `Query finished in ${Math.floor((end - start) / 1000)} seconds`
+            var csvLink = createCSV(result);
+            var jsonLink = createJSON(result);
+            var query_text = document.createElement("p")
+            query_text.innerHTML = `Query finished in ${Math.floor((end - start) / 1000)} seconds, showing first 100 rows. You can download the entire result here:`;
+            result_text.appendChild(query_text);
+            result_text.appendChild(csvLink);
+            result_text.appendChild(jsonLink);
             showResult(result)
         })
         .catch((error) => {
@@ -119,7 +125,7 @@ const showResult = (result) => {
         headers.push(field.name)
     })
     table.appendChild(headerRow)
-    result.toArray().map((row) => {
+    result.toArray().slice(0,99).map((row) => {
         var tableRow = document.createElement("tr")
         headers.forEach((field) => {
             var cell = document.createElement("td")
@@ -129,6 +135,41 @@ const showResult = (result) => {
         table.appendChild(tableRow)
     })
 }
+
+const createJSON = (result) => {
+    let content = "data:text/json;charset=utf-8,[\n";
+    result.toArray()
+        .map((row) => {
+            content += `${row.toString()},\n`
+        })
+    content = content.slice(0, -2);
+    content += "\n]"
+    var encodedUri = encodeURI(content);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "result.json");
+    link.innerHTML = "Download JSON"
+    link.style.padding = "5px"
+    return link;
+}
+const createCSV = (result) => {
+    let content = "data:text/csv;charset=utf-8,";
+    result.schema.fields
+        .map((field) => field["name"])
+        .map((header) => content += `${header},`);
+    content += "\n";
+    content += result.toArray()
+        .map((row) => row.toArray().join(","))
+        .join("\n");
+    var encodedUri = encodeURI(content);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "result.csv");
+    link.innerHTML = " Download CSV"
+    link.style.padding = "5px"
+    return link;
+}
+
 const addTableToList = (tableName, description) => {
     var tableList = document.getElementById("tables");
     var tableItem = createTableSchema(tableName, description)
