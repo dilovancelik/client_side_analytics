@@ -13,12 +13,13 @@
     <link rel="manifest" href="/site.webmanifest">
     <script src="index.js" type="module"></script>
     <script defer data-domain="dilovancelik.github.io" src="https://plausible.io/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <body>
     <h1 style="text-align: center;">QuackHouse &#129414;</h1>
     <div class="container">
         <div class="upladButton">
             <input type="file" name="file" id="file" accept=".json, .csv, .parquet" hidden/>
-            <label for="file">Upload</label>
+            <label class="uploadLabel" for="file">Upload</label>
             <span id="filetext">Choose CSV, JSON or Parquet to create table</span>
             <p class="query_help" id="table_result_text"></p>
         </div>
@@ -38,11 +39,24 @@
         </div>
         <div class="result">
             <h2>Results:</h2>
-            <table id="result">
             <div class="query_help" id="query_result_text"></div>
-            </table>
+            <div class="result_type" id="result_type">
+                <button type="button" class="result_type_button" id="table_type_result">Table</button><button type="button" class="result_type_button" id="chart_type_result">Chart</button>
+            </div>
+             <div id="result_output">
+                <table id="table_result" class="result_table"></table>
+                <div id="chart_area" style="display: none;">
+                    <label for="chart_type">Pick a chart type</label>
+                    <select id="chart_type">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="scatter">Scatter</option>
+                    </select> 
+                    <canvas id="chart_result" class="result_chart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 
-</html>
+</html> 

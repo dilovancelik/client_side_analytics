@@ -8,7 +8,7 @@
     padding-bottom: 20px;
 }
 
-label {
+.uploadLabel {
     background-color: #118bee;
     display: inline-block;
     color: white;
@@ -120,4 +120,20 @@ details ul li:last-child {
     border-radius: 10px;
     padding: 10px;
     display: inline-block;
+}
+
+.result_chart {
+    display: none;
+}
+.result_table {
+    display: none;
+    text-align: left;
+}
+
+.result_type {
+    display: none;
+}
+
+.result_type_button {
+    margin: 10px;
 }

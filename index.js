@@ -87,8 +87,10 @@ const executeQuery = async () => {
     suggestionElement.innerHTML = "";
     var button = document.getElementById("execute_button");
     button.textContent = "Executing..."
-    var table = document.getElementById("result");
+    var table = document.getElementById("table_result");
     table.innerHTML = "";
+    var chart = document.getElementById("chart_result");
+    chart.innerHTML = "";
     var query = document.getElementById("query_textarea").value;
     const c = await db.connect();
     c.query(query)
@@ -104,9 +106,11 @@ const executeQuery = async () => {
             showResult(result)
         })
         .catch((error) => {
-            var htmlError = error.message.split("\n").map((line) => "> " + line).slice(0, -1).join("<br/>");
+            var htmlError = error.message.split("\n").map((line) => "> " + line).join("<br/>");
             result_text.classList.add("query_error");
             result_text.innerHTML = htmlError;
+            console.log(htmlError);
+            console.log(error);
         })
         .finally(async () => {
             await c.close()
@@ -116,15 +120,17 @@ const executeQuery = async () => {
 
 const showResult = (result) => {
     var headers = [];
+    var result_type_buttons = document.getElementById("result_type");
+    result_type_buttons.style.display = "inline-block";
     var headerRow = document.createElement("tr");
-    var table = document.getElementById("result")
+    var table = document.getElementById("table_result");
     result.schema.fields.map((field) => {
-        var header = document.createElement("th")
-        header.innerHTML = field.name
-        headerRow.appendChild(header)
-        headers.push(field.name)
+        var header = document.createElement("th");
+        header.innerHTML = field.name;
+        headerRow.appendChild(header);
+        headers.push(field.name);
     })
-    table.appendChild(headerRow)
+    table.appendChild(headerRow);
     result.toArray().slice(0,99).map((row) => {
         var tableRow = document.createElement("tr")
         headers.forEach((field) => {
@@ -134,6 +140,9 @@ const showResult = (result) => {
         })
         table.appendChild(tableRow)
     })
+    table.style.display = "inline-block";
+    document.getElementById("chart_area").style.display = "none";
+    generateChart(result);
 }
 
 const createJSON = (result) => {
@@ -266,7 +275,7 @@ query_area.addEventListener("keydown", (e) => {
         }
         if (current_suggestion) {
             current_suggestion.classList.add("suggestion_active")
-        }a
+        }
         // var currentsuggestion = suggestions.childNodes[suggestionButtonCounter];
         return false;
     } else if (e.key === "Enter" && document.getElementsByClassName("suggestion_active").length !== 0) {
@@ -314,10 +323,79 @@ const findIndexOfCurrentWord = () => {
     return startIndex;
 };
 
+const generateChart = (result) => {
+    const ctx = document.getElementById("chart_result");
+    var chart_type = document.getElementById("chart_type").value;
+    if (Chart.getChart("chart_result")) {
+        Chart.getChart("chart_result").destroy(); 
+    };
+
+    const fields = result.schema.fields.map((field) => field["name"]);
+
+    var labels = [];
+    var datasets = {};
+    fields.slice(1).map((field) => datasets[field] = {
+        label: field,
+        data: [],
+        borderWidth: 1
+    });
+    result.toArray().map((row) => {
+        labels.push(row[fields[0]])
+        Object.keys(datasets).map((field) => datasets[field]["data"].push(row[field]))
+    });
+
+
+
+    new Chart(ctx, {
+        type: chart_type,
+        data: {
+            labels: labels,
+            datasets: Object.values(datasets) 
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+};
+
+const showChart = () => {
+    const chart = document.getElementById("chart_area");
+    const table = document.getElementById("table_result");
+    chart.style.display = "block";
+    table.style.display = "none";
+}
+
+const showTable = () => {
+    const chart = document.getElementById("chart_area");
+    const table = document.getElementById("table_result");
+    chart.style.display = "none";
+    table.style.display = "block";
+}
+
 document.getElementById("execute_button").addEventListener("click", () => {
     executeQuery();
 });
 
 document.getElementById("file").addEventListener("change", () => {
     loadData();
+})
+
+document.getElementById("chart_type_result").addEventListener("click", () => {
+    showChart();
+})
+
+document.getElementById("table_type_result").addEventListener("click", () => {
+    showTable();
+})
+
+document.getElementById("chart_type").addEventListener("change", () => {
+    var chart_type = document.getElementById("chart_type").value;
+    var chart = Chart.getChart("chart_result");
+
+    chart.config.type = chart_type;
+    chart.update();
 })
