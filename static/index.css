@@ -1,3 +1,4 @@
+
 .container {
     display: grid;
     grid-template-columns: 70% 30%;
@@ -6,6 +7,12 @@
     padding-left: 10%;
     padding-right: 10%;
     padding-bottom: 20px;
+}
+
+.column-border {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    border-left: 5px;
 }
 
 .uploadLabel {
