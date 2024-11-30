@@ -1,0 +1,32 @@
+
+.main_grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 0px;
+}
+
+.query {
+    grid-area: 1 / 1 / 2 / 4; 
+}
+
+.database_explorer { 
+    grid-area: 1 / 4 / 2 / 5;
+}
+
+.result { 
+    grid-area: 2 / 1 / 3 / 5; 
+}
+
+.chart_pickers { 
+    grid-area: 3 / 1 / 4 / 2; 
+}
+
+.chart_visual { 
+    grid-area: 3 / 2 / 4 / 5; 
+}
+
+.suggestion_active {
+    background: var(--pico-mark-background-color);
+    border-radius: 5px;
+}
