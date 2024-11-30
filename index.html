@@ -1,62 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuackHouse</title>
-    <link rel="stylesheet" href="static/base.css">
-    <link rel="stylesheet" href="static/index.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-    <link rel="manifest" href="assets/site.webmanifest">
-    <script src="static/index.js" type="module"></script>
-    <script defer data-domain="dilovancelik.github.io" src="https://plausible.io/js/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<body>
-    <h1 style="text-align: center;">QuackHouse &#129414;</h1>
-    <div class="container">
-        <div class="upladButton">
-            <input type="file" name="file" id="file" accept=".json, .csv, .parquet" hidden/>
-            <label class="uploadLabel" for="file">Upload</label>
-            <span id="filetext">Choose CSV, JSON or Parquet to create table</span>
-            <p class="query_help" id="table_result_text"></p>
-        </div>
-        <div class="tables">
-            <h3>Database Explorer</h3>
-            <ul id="tables">
-            </ul>
-        </div>
-        <div class="query">
-            <h2>SQL Query</h2>
-            <div id="query_container" class="query_container">
-                <p class="query_help">Use SHIFT+TAB to toggle through autocomplete suggestions. To execute the query press F5 og click the execute button</p>
-                <textarea id="query_textarea" class="query_textarea" rows="20"></textarea> 
-                <div id="auto_suggestions" class="suggestions"></div>
-            </div> 
-            <button type="button" id="execute_button">Execute</button>
-        </div>
-        <div class="result">
-            <h2>Results:</h2>
-            <div class="query_help" id="query_result_text"></div>
-            <div class="result_type" id="result_type">
-                <button type="button" class="result_type_button" id="table_type_result">Table</button><button type="button" class="result_type_button" id="chart_type_result">Chart</button>
-            </div>
-             <div id="result_output">
-                <table id="table_result" class="result_table"></table>
-                <div id="chart_area" style="display: none;">
-                    <label for="chart_type">Pick a chart type</label>
+<html lang="en" color-mode="use">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QuackHouse</title>
+        <link rel="stylesheet" href="static/index.css">
+        <link rel="stylesheet" href="static/pico.min.css">
+        <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+        <link rel="manifest" href="assets/site.webmanifest">
+        <script src="static/index.js" type="module"></script>
+        <script defer data-domain="dilovancelik.github.io" src="https://plausible.io/js/script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+        <body>
+            <div class="container">
+                <br>
+                <h1 align="center">QuackHouse &#129414;</h1>
+                <br>
+                <div class="main_grid">
+                    <div class="query">
+                        <div class="upladButton">
+                            <span id="filetext">Upload CSV, JSON or Parquet to create table</span>
+                            <input type="file" name="file" id="file" accept=".json, .csv, .parquet"/>
+                            <small id="table_result_text"></small>
+                            <div id="query_container">
+                                <h4>SQL Query</h4>
+                                <small>Use SHIFT+TAB to toggle through autocomplete suggestions. To execute the query press F5 og click the execute button</small>
+                                <textarea id="query_textarea" style="resize: vertical;" rows="10" placeholder="Write a SQL Query here..."></textarea> 
+                            </div> 
+                            <div id="auto_suggestions"></div>
+                            <br>
+                            <button type="button" id="execute_button">Execute</button>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="database_explorer">
+                        <details>
+                                <summary><b>Database Explorer</b></summary>
+                                <ul id="tables"></ul>
+                        </details>
+                    </div>
+                    <div class="result">
+                        <div id="result_header" style="display: none;">
+                            <h4>Results</h4>
+                            <small id="query_result_text"></small>
+                            <br>
+                        </div>
+                        <div id="result_output" style="display: none;">
+                            <div class="result_type" id="result_type">
+                            <nav>
+                                <ul>
+                                    <li><a href="#" id="table_type_result">Table</a></li>
+                                <li><a href="#" id="chart_type_result">Chart</a></li>
+                            </ul>
+                        </nav>
+                        </div>
+                        <table id="table_result" class="result_table"></table>
+                    </div>
+                </div>
+                <div class="chart_picker" name="chart_area" style="display: none;">
                     <select id="chart_type">
+                        <option value="" disabled>Select Chart Type</option>
                         <option value="bar">Bar</option>
                         <option value="line">Line</option>
-                        <option value="scatter">Scatter</option>
-                    </select> 
-                    <canvas id="chart_result" class="result_chart"></canvas>
+                        <option value="scatter"Scatter></option>
+                    </select>
+                    <select id="xvalue">
+                    </select>
+                    <select id="yvalues" multiple>
+                    </select>
+                    <button type="button" id="generate_chart_button">Generate Chart</button>
+                </div>
+                <div class="chart_visual" name="chart_area" style="display: none;">
+                    <canvas id="chart_result" chaer></canvas>      
                 </div>
             </div>
-        </div>
-    </div>
-</body>
+    </body>
 
 </html> 
