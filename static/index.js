@@ -363,6 +363,7 @@ const generateChartData = (result) => {
             y_value.textContent = field.name;
             y_values.appendChild(y_value);
         })
+    console.log(chartData);
     result
         .toArray()
         .map((row) => Object.keys(chartData).map((field) => chartData[field]["data"].push(row[field])));

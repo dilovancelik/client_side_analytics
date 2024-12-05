@@ -1,5 +1,8 @@
-use core::str;
+mod statics;
+mod query_builder;
+mod data_model;
 
+use core::str;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -44,7 +47,7 @@ pub fn sql_parser_autocomplete(query: String, tables: Vec<String>, cursor_loc: u
                 index += 1; 
             }
             let identifier: &str = &split_query[index].to_lowercase();
-            if !DUCKDB_KEYWORDS.contains(&identifier) {
+            if !statics::DUCKDB_KEYWORDS.contains(&identifier) {
                 result_query = result_query.replace(&format!(" {identifier}."), &format!(" {table}."));
             }
         }
@@ -52,116 +55,3 @@ pub fn sql_parser_autocomplete(query: String, tables: Vec<String>, cursor_loc: u
 
     return result_query;
 }
-
-
-static DUCKDB_KEYWORDS: [&str; 107] = [
-    "all",
-    "analyse",
-    "analyze",
-    "and",
-    "anti",
-    "any",
-    "array",
-    "as",
-    "asc",
-    "asof",
-    "asymmetric",
-    "authorization",
-    "binary",
-    "both",
-    "case",
-    "cast",
-    "check",
-    "collate",
-    "collation",
-    "column",
-    "columns",
-    "concurrently",
-    "constraint",
-    "create",
-    "cross",
-    "default",
-    "deferrable",
-    "desc",
-    "describe",
-    "distinct",
-    "do",
-    "else",
-    "end",
-    "except",
-    "false",
-    "fetch",
-    "for",
-    "foreign",
-    "freeze",
-    "from",
-    "full",
-    "generated",
-    "glob",
-    "grant",
-    "group",
-    "having",
-    "ilike",
-    "in",
-    "initially",
-    "inner",
-    "intersect",
-    "into",
-    "is",
-    "isnull",
-    "join",
-    "lateral",
-    "leading",
-    "left",
-    "like",
-    "limit",
-    "map",
-    "natural",
-    "not",
-    "notnull",
-    "null",
-    "offset",
-    "on",
-    "only",
-    "or",
-    "order",
-    "outer",
-    "overlaps",
-    "pivot",
-    "pivot_longer",
-    "pivot_wider",
-    "placing",
-    "positional",
-    "primary",
-    "qualify",
-    "references",
-    "returning",
-    "right",
-    "select",
-    "semi",
-    "show",
-    "similar",
-    "some",
-    "struct",
-    "summarize",
-    "symmetric",
-    "table",
-    "tablesample",
-    "then",
-    "to",
-    "trailing",
-    "true",
-    "try_cast",
-    "union",
-    "unique",
-    "unpivot",
-    "using",
-    "variadic",
-    "verbose",
-    "when",
-    "where",
-    "window",
-    "with"
-];
-
-
